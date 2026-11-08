@@ -1,33 +1,38 @@
 # StorHUB
 
-**Versão 0.1.0-alpha · Aplicativo nativo para Windows**
+**Versão 0.1.0-alpha — Windows / C# WinForms**
 
-O StorHUB é um aplicativo independente de diagnóstico e manutenção de PCs, com interface escura, navegação em português e ferramentas do Windows. O objetivo do projeto é atingir **equivalência visual e funcional** com a referência [HUB Pro — Mestres da Informática](https://github.com/mestresdainformatica/HUB-Pro), preservando o nome e a identidade **StorHUB**.
+O StorHUB é uma central independente de diagnóstico e manutenção do Windows. A meta é aproximar a **interface e as funções** do [HUB Pro, de Mestres da Informática](https://github.com/mestresdainformatica/HUB-Pro), mantendo a identidade StorHUB. Este projeto utiliza código próprio. **Não é uma versão 100% equivalente ao HUB Pro**, nem contém seu executável ou código fechado.
 
-> **Estado atual: implementação parcial; ainda NÃO é equivalente 100% ao HUB Pro.** O repositório de referência oferece executáveis, documentação e imagens, mas não disponibiliza o código-fonte integral. O código deste repositório está sendo escrito de forma independente.
+## Funções implementadas
 
-## Implementado
-
-| Módulo | Funcionalidade implementada | Limitações conhecidas |
+| Área | Já existe e pode ser usado | O que ainda falta |
 |---|---|---|
-| Painel | Indicador básico e leitura de RAM, disco, Windows, rede e unidades | Não corresponde à análise profunda original; indicador usa RAM e espaço livre |
-| Meu PC | Consulta real a Windows, processador, GPU, RAM, disco; copiar resumo | Relatório completo e sensores pendentes |
-| Programas | Inventário real de aplicativos instalados, pesquisa e abertura das configurações do Windows | Catálogo winget, instalação e atualização ainda pendentes |
-| Inicialização | Itens do Registro e pastas de inicialização; abrir Gerenciador de Tarefas | Desabilitar, reabilitar e medir tempo de boot pendentes |
-| Rede | Interfaces ativas, IPv4, gateway, DNS e teste de ping sob demanda | Speedtest, histórico, DNS comparativo e otimização pendentes |
-| Windows 11 | RAM, espaço, registro Secure Boot e consulta do TPM | Compatibilidade de CPU e GPU não validada; resultado não é certificação |
-| Pontos de restauração | Consulta WMI e solicitação manual de criação com confirmação | Criação depende de permissões/proteção do Windows; restauração real não implementada |
-| Limpeza | Análise dos temporários do usuário com mais de 48h; seleção e envio à Lixeira com confirmação | Não cobre demais caches do Windows; exclusão não validada ponta a ponta |
-| Saúde dos discos | Unidades detectadas, formato, tamanho total e espaço livre | Não mede S.M.A.R.T., temperatura ou desgaste |
-| Bateria | Inventário e percentual via Win32_Battery | Gráficos, ciclos e histórico pendentes |
-| Arquivos duplicados | Varredura por tamanho e SHA-256, marcação de cópias extras, confirmação e envio à Lixeira | Até 12 mil arquivos e 1 GiB/arquivo na versão inicial; exclusão não testada ponta a ponta |
-| Mapa do disco | Soma de tamanhos por pasta, gráfico de blocos e tabela | Até 30 mil arquivos; navegação detalhada e treemap recursivo pendentes |
+| Painel | Indicador simples, RAM, disco, Windows e navegação | Diagnóstico completo e fidelidade visual |
+| Meu PC | CPU, GPU, RAM, disco e resumo copiável | Sensores avançados e informações adicionais |
+| Programas | Inventário do Registro e pesquisa | Catálogo, instalação, atualização e desinstalação próprios |
+| Inicialização | Itens do Registro e pastas Startup | Gestão e medição do tempo de inicialização |
+| Drivers | Inventário real de dispositivos Plug and Play, códigos de erro, pesquisa e exportação CSV | Atualização e recuperação de drivers |
+| Rede | Adaptadores, IP, gateway, DNS e ping sob demanda | Medição de velocidade, DNS comparativo e diagnóstico avançado |
+| Windows 11 | Verificação parcial de RAM, disco, Secure Boot e TPM | Validação oficial completa de CPU e GPU |
+| Pontos de restauração | Consulta e solicitação de criação mediante confirmação | Restauração guiada e gestão completa |
+| Saúde dos discos | Partições, formato, espaço disponível | Temperatura, S.M.A.R.T. e desgaste |
+| Bateria | Detecção e percentual fornecidos pelo Windows | Ciclos, histórico e relatórios |
+| Limpeza | Pesquisa em TEMP do usuário e envio seletivo à Lixeira com confirmação | Categorias adicionais, testes de exclusão ponta a ponta |
+| Arquivos duplicados | Busca por SHA-256, seleção e proteção de uma cópia por grupo | Escalabilidade, outros filtros e exclusão validada ponta a ponta |
+| Mapa do disco | Análise por pasta, tamanhos e gráfico | Mapa recursivo interativo |
+| Benchmark | Medições de CPU, cópia de memória e disco, histórico, cancelamento | Equivalência com a fórmula do aplicativo de referência |
+| Periféricos | Testes interativos de teclado e mouse, teste de pixels e geração de tom estéreo | Microfone, webcam, controle e testes de precisão/compatibilidade |
+| Reparar o Windows | Verificações DISM CheckHealth e SFC verifyonly acionadas manualmente, com relatório e cancelamento | Fluxo de reparo seguro, rollback e integração de resultados |
+| Otimizações | Consulta de serviços e atalhos para ajustes oficiais do Windows | Otimizações reversíveis e recomendações verificadas |
 
-Os demais módulos da barra lateral são **estruturas de interface**, sem as funções completas. Não estão prontos: pós-formatação, benchmark, testes de periféricos, reparos, otimizações, desinstalador avançado, drivers, duplicações do catálogo e central desfazer.
+As demais áreas (incluindo pós-formatação, desinstalador avançado, backup e central desfazer) **ainda são telas ou fluxos parciais**, não funções completas.
 
-## Compilação (Windows)
+O indicador do Painel usa exclusivamente memória e espaço livre e **não equivale** a um diagnóstico profundo do PC. O benchmark produz métricas próprias, **não uma pontuação comparável ao HUB Pro**.
 
-Requer Windows com **.NET Framework 4.8**, PowerShell 5.1 e o compilador C# incluído no Framework (o script já utiliza o compilador de 64 bits). Um SDK .NET separado não é necessário.
+## Compilar no NEXUS
+
+Código local: `E:\StorHUB\StorHUB-src\`.
 
 ~~~powershell
 cd E:\StorHUB\StorHUB-src
@@ -35,30 +40,40 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\build.ps1
 .\dist\StorHUB.exe
 ~~~
 
-## Testes não destrutivos
+O script utiliza o compilador C# do .NET Framework 4.8 já presente no Windows. O executável compilado é mantido em `dist/` e **não é versionado no GitHub**.
+
+## Testes
 
 ~~~powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\smoke.ps1
 ~~~
 
-No NEXUS, a versão foi compilada e a suíte retornou **18 testes aprovados** em 08/11/2026. Os testes cobrem criação da janela, abertura de 13 telas e lógica de diagnóstico em dados de amostra (SHA-256, ocupação por pastas, temporários antigos e indicador). **Não** testam, nem executam, limpeza real, criação de pontos de restauração, alterações do Windows ou equivalência total com a referência.
+Em **08/11/2026, 30 testes automatizados passaram no NEXUS**, incluindo abertura de 18 telas, consulta de dispositivos, tarefas de benchmark, cancelamento e integridade de comandos Windows. As verificações de SFC/DISM foram **inspecionadas, não executadas** durante a suíte. Os testes não comprovam qualidade visual pixel por pixel, limpeza real, instalação de programas ou equivalência integral com o aplicativo de referência.
 
-## Arquivos no NEXUS
+Para medir diferenças reais entre imagens de **mesmo tamanho, DPI e estado**:
 
-- Fontes: \`E:\StorHUB\StorHUB-src\src\`
-- Script de compilação: \`E:\StorHUB\StorHUB-src\build.ps1\`
-- Executável gerado: \`E:\StorHUB\StorHUB-src\dist\StorHUB.exe\`
-- Capturas de referência: \`E:\StorHUB\referencias\` (23 telas, 1280 × 820 pixels)
-- Originais preservados: \`E:\StorHUB\HUB-Pro-Setup-0.3.23.0.exe\`, \`E:\StorHUB\MestresHub.exe\`, \`E:\StorHUB\HUB-Pro-0.3.23.zip\`
+~~~powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\compare-pixels.ps1 -Reference E:\StorHUB\referencias\painel.png -Actual C:\caminho\captura-storhub.png -Heatmap C:\caminho\diff.png
+~~~
 
-As imagens originais de comparação são somente material local do usuário no NEXUS e **não são distribuídas** neste repositório.
+Veja o [plano de fidelidade visual](docs/fidelidade-visual.md).
 
-## Fidelidade visual
+## Ghidra + REA disponíveis globalmente no NEXUS
 
-Veja [docs/fidelidade-visual.md](docs/fidelidade-visual.md). A tela inicial usa navegação, cores e cartões inspirados na referência, mas ainda é uma aproximação: **a equivalência pixel a pixel não foi atingida**.
+As ferramentas foram instaladas em `C:\Tools\ReverseEngineering` e adicionadas ao **PATH de todos os usuários**:
 
-## Segurança e créditos
+| Ferramenta | Versão | Comando |
+|---|---|---|
+| Ghidra | 12.1.4 | `ghidra` |
+| Ghidra Headless | 12.1.4 | `ghidra-headless` |
+| REA | 6.8.0 | `rea` |
 
-O projeto não executa reparos, limpeza ou instalações em segundo plano. As operações destrutivas já implementadas só ocorrem após seleção explícita e confirmação; recomenda-se validá-las em ambiente de testes antes de usar com arquivos importantes.
+Também há um atalho **Ghidra 12.1.4** no Menu Iniciar de todos os usuários. Use um novo terminal para carregar o PATH. Leia a [configuração global](docs/ferramentas-globais-nexus.md) e a [análise do executável original](docs/analise-binaria.md).
 
-O HUB Pro original pertence a **Mestres da Informática**. O StorHUB é independente, sem afiliação declarada. Os binários originais e código-fonte não publicado **não são redistribuídos**.
+Os originais `MestresHub.exe`, `HUB-Pro-Setup-0.3.23.0.exe` e o ZIP de referência em `E:\StorHUB` não foram modificados.
+
+## Segurança e autoria
+
+As verificações de integridade, benchmarks e varreduras não iniciam automaticamente ao abrir o programa. Operações como envio de arquivos à Lixeira e criação de pontos de restauração exigem ação explícita e confirmação. **Não utilize os módulos ainda não validados com arquivos importantes.**
+
+HUB Pro é de **Mestres da Informática**. StorHUB é uma implementação independente e não afiliada. As capturas e binários do projeto original não são redistribuídos aqui.
