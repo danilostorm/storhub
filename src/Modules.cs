@@ -34,6 +34,8 @@ namespace StorHUB {
         private bool TryShowFunctionalModule(string section) {
             switch (section) {
                 case "Programas": ShowPrograms(); return true;
+                case "Arquivos duplicados": ShowDuplicates(); return true;
+                case "Mapa do disco": ShowDiskMap(); return true;
                 case "Inicialização": ShowStartup(); return true;
                 case "Rede": ShowNetwork(); return true;
                 case "Windows 11": ShowWindows11(); return true;
@@ -261,14 +263,15 @@ namespace StorHUB {
                 using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(
                     @"root\CIMV2\Security\MicrosoftTpm", "SELECT * FROM Win32_Tpm")) {
                     foreach (ManagementObject item in searcher.Get()) {
-                        tpm = true;
-                        tpmMessage = "TPM encontrado: " + Convert.ToString(item["SpecVersion"]);
+                        string specs = Convert.ToString(item["SpecVersion"]);
+                        tpm = specs.TrimStart().StartsWith("2.0", StringComparison.Ordinal);
+                        tpmMessage = "Versão informada: " + specs;
                         break;
                     }
                 }
             } catch { }
             AddCheckLine(pane, 3, "TPM (versão 2.0 exigida)",
-                tpmMessage + " — confirme a versão", null);
+                tpmMessage, tpm);
             AddCheckLine(pane, 4, "CPU compatível com a lista oficial",
                 "Não implementado: exige consulta à lista oficial de processadores", null);
             AddCheckLine(pane, 5, "DirectX 12 e driver WDDM 2.0",
