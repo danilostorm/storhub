@@ -103,8 +103,11 @@ namespace StorHUB {
             sidebar.Controls.Add(foot);
 
             FlowLayoutPanel items = new FlowLayoutPanel();
-            items.Dock = DockStyle.Fill;
+            items.Dock = DockStyle.None;
             items.FlowDirection = FlowDirection.TopDown;
+            items.Location = new Point(0, 85);
+            items.Size = new Size(218, Math.Max(150, sidebar.ClientSize.Height - 120));
+            sidebar.Resize += delegate { items.Height = Math.Max(150, sidebar.ClientSize.Height - 120); };
             items.WrapContents = false;
             items.AutoScroll = true;
             items.Padding = new Padding(7, 3, 5, 15);
@@ -253,7 +256,7 @@ namespace StorHUB {
                 AddText(hero, findings[i], left, 117 + 31 * i, width - left - 15, 27,
                         9, FontStyle.Regular, c);
             }
-            AddButton(hero, "Analisar novamente", left, 290, 177,
+            AddButton(hero, hasAnalysis ? "Analisar novamente" : "Iniciar análise", left, 290, 177,
                 delegate { RefreshSnapshot(); hasAnalysis = true; healthScore = CalculateScore(); ShowPage("Painel"); });
             AddButton(hero, "Meu PC", left + 190, 290, 104,
                 delegate { ShowPage("Meu PC"); }, false);
@@ -373,11 +376,10 @@ namespace StorHUB {
         }
 
         private static string FormatBytes(double n) {
-            string[] units = { "B", "KB", "GB", "TB", "PB" };
+            string[] units = { "B", "KB", "MB", "GB", "TB", "PB" };
             if (n < 1024) return n.ToString("0") + " B";
             int unit = 0;
             while (n >= 1024 && unit < units.Length - 1) { n /= 1024; unit++; }
-            // Correct the second unit label after B -> KB.
             return n.ToString("0.0") + " " + units[unit];
         }
 
