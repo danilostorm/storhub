@@ -219,12 +219,14 @@ namespace StorHUB {
                 catch { continue; }
                 foreach (string file in files) {
                     cancellation.ThrowIfCancellationRequested();
+                    bool allowed = false;
                     try {
-                        if (!Path.GetFullPath(file).StartsWith(canonical, StringComparison.OrdinalIgnoreCase) ||
-                            (File.GetAttributes(file) & FileAttributes.ReparsePoint) != 0) continue;
-                        yield return file;
-                        if (++yielded >= maxFiles) yield break;
+                        allowed = Path.GetFullPath(file).StartsWith(canonical, StringComparison.OrdinalIgnoreCase) &&
+                                  (File.GetAttributes(file) & FileAttributes.ReparsePoint) == 0;
                     } catch { }
+                    if (!allowed) continue;
+                    yield return file;
+                    if (++yielded >= maxFiles) yield break;
                 }
             }
         }
