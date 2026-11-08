@@ -19,7 +19,7 @@ namespace StorHUB {
         }
     }
 
-    public class StorHubForm : Form {
+    public partial class StorHubForm : Form {
         private static readonly Color Bg = Color.FromArgb(11, 15, 25);
         private static readonly Color Side = Color.FromArgb(14, 20, 34);
         private static readonly Color Card = Color.FromArgb(21, 28, 47);
@@ -320,6 +320,7 @@ namespace StorHUB {
         }
 
         private void ShowModule(string section) {
+            if (TryShowFunctionalModule(section)) return;
             int width = ViewWidth;
             AddText(workspace, section, 20, 20, width - 30, 52, 22, FontStyle.Bold);
             string intro = "Módulo em desenvolvimento. Nenhuma alteração no Windows será feita automaticamente.";
