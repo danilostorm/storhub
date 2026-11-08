@@ -69,6 +69,7 @@ namespace StorHUB {
             Font = bodyFont;
             DoubleBuffered = true;
             InitializeLayout();
+            InitializePeripheralEvents();
             Shown += delegate { RefreshSnapshot(); ShowPage("Painel"); };
             Resize += delegate {
                 if (WindowState != FormWindowState.Minimized) ShowPage(active);
