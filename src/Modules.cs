@@ -34,6 +34,7 @@ namespace StorHUB {
         private bool TryShowFunctionalModule(string section) {
             switch (section) {
                 case "Programas": ShowPrograms(); return true;
+                case "Drivers": ShowDrivers(); return true;
                 case "Arquivos duplicados": ShowDuplicates(); return true;
                 case "Mapa do disco": ShowDiskMap(); return true;
                 case "Inicialização": ShowStartup(); return true;
