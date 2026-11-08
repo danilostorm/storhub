@@ -36,6 +36,7 @@ namespace StorHUB {
                 case "Programas": ShowPrograms(); return true;
                 case "Drivers": ShowDrivers(); return true;
                 case "Periféricos": ShowPeripherals(); return true;
+                case "Benchmark": ShowBenchmark(); return true;
                 case "Arquivos duplicados": ShowDuplicates(); return true;
                 case "Mapa do disco": ShowDiskMap(); return true;
                 case "Inicialização": ShowStartup(); return true;
