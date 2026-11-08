@@ -1,30 +1,46 @@
 # StorHUB
 
-**Status:** preparação para migração. O aplicativo ainda **não foi importado**.
+**Protótipo independente para Windows — versão 0.1.0-alpha.**
 
-## Objetivo
+O StorHUB é uma central de diagnóstico e manutenção de PCs com interface escura e navegação em português. O desenvolvimento é independente, usando como **referência visual e funcional** o [HUB Pro — Mestres da Informática](https://github.com/mestresdainformatica/HUB-Pro).
 
-Desenvolver o **StorHUB**, uma central para Windows com funcionalidades de diagnóstico, manutenção, pós-formatação, limpeza, drivers, otimizações e ferramentas de sistema.
+## Estado atual
 
-## Projeto usado como referência
+**Já implementado e compilado no NEXUS:**
+- Interface Windows Forms com painel principal, navegação por categorias, cartões e indicador de análise.
+- Consulta real e **somente leitura** de Windows, CPU, GPU, memória RAM e disco.
+- Listagem de unidades, interfaces de rede e detecção de bateria.
+- Resumo copiável das informações do computador.
+- Indicador inicial baseado **somente** em RAM e espaço livre: não equivale ao diagnóstico de saúde completo do programa de referência.
+- Atalhos explícitos para páginas de configurações do Windows.
 
-- Projeto: [HUB Pro — Mestres da Informática](https://github.com/mestresdainformatica/HUB-Pro)
-- Versão consultada: `v0.3.23`
-- Repositório de destino: [danilostorm/storhub](https://github.com/danilostorm/storhub)
+**Ainda não implementado:** os módulos de manutenção, limpeza, benchmark, drivers, reparos, desinstalação, pós-formatação e otimização. Eles estão representados na navegação, mas não executam ações.
 
-## Limitação da migração
+## Onde estão os arquivos no NEXUS
 
-O repositório de referência disponibiliza **documentação e imagens**, mas não publica o código-fonte do aplicativo. Suas *releases* fornecem executáveis `.exe` (instalador e versão portátil), que não substituem os arquivos editáveis necessários para alterar com segurança o nome, a interface, o identificador do aplicativo e o mecanismo de atualização.
+- Fontes: \`E:\StorHUB\StorHUB-src\src\StorHUB.cs\`
+- Compilação: \`E:\StorHUB\StorHUB-src\build.ps1\`
+- Binário de desenvolvimento: \`E:\StorHUB\StorHUB-src\dist\StorHUB.exe\`
+- Referência visual extraída: \`E:\StorHUB\referencias\painel.png\`
 
-Além disso, o arquivo `LICENCAS-TERCEIROS.txt` trata de componentes de terceiros; não é uma licença explícita para todo o programa original.
+Os executáveis originais permanecem em \`E:\StorHUB\` e não foram alterados.
 
-**Nenhum código ou binário do HUB Pro foi copiado para este repositório.** O nome StorHUB nesta documentação não implica que exista uma versão funcional renomeada.
+## Compilar no Windows
 
-## Para concluir
+Requer Windows com .NET Framework 4.8 e PowerShell 5.1. O script utiliza o compilador C# do próprio .NET Framework, sem SDK adicional.
 
-1. Obter o código-fonte do aplicativo e a autorização/licença aplicável para modificar e redistribuir.
-2. Atualizar a identidade visual e as referências internas para **StorHUB**.
-3. Revisar instalador, executável, atalhos, configuração de atualização e identidade do aplicativo.
-4. Compilar e testar em Windows antes de distribuir uma versão.
+~~~powershell
+cd E:\StorHUB\StorHUB-src
+powershell -NoProfile -ExecutionPolicy Bypass -File .\build.ps1
+.\dist\StorHUB.exe
+~~~
 
-> Créditos: o HUB Pro original é de Mestres da Informática. StorHUB é o nome proposto para este projeto independente.
+## Direção visual
+
+O objetivo é aproximar progressivamente o layout do material de referência, ajustando cores, medidas, tipografia, cartões, ícones e espaçamento por comparação de capturas. **Ainda não há equivalência pixel a pixel**, e as imagens do aplicativo original não estão incluídas no código.
+
+## Autoria e créditos
+
+A implementação foi escrita do zero. **Não copiamos o código-fonte nem os executáveis** do HUB Pro, porque seu repositório público fornece documentação, imagens e binários de distribuição, mas não disponibiliza o código-fonte do aplicativo. O documento \`LICENCAS-TERCEIROS.txt\` do projeto original diz respeito a componentes de terceiros e não autoriza, por si só, reprodução ou redistribuição de todo o aplicativo.
+
+**HUB Pro original:** Mestres da Informática. **StorHUB:** projeto independente, sem afiliação declarada.
