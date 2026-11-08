@@ -20,14 +20,14 @@ namespace StorHUB {
     }
 
     public class StorHubForm : Form {
-        private static readonly Color Bg = Color.FromArgb(15, 20, 34);
-        private static readonly Color Side = Color.FromArgb(12, 17, 29);
-        private static readonly Color Card = Color.FromArgb(25, 31, 51);
-        private static readonly Color Border = Color.FromArgb(39, 48, 71);
-        private static readonly Color Primary = Color.FromArgb(58, 121, 247);
+        private static readonly Color Bg = Color.FromArgb(11, 15, 25);
+        private static readonly Color Side = Color.FromArgb(14, 20, 34);
+        private static readonly Color Card = Color.FromArgb(21, 28, 47);
+        private static readonly Color Border = Color.FromArgb(35, 44, 67);
+        private static readonly Color Primary = Color.FromArgb(54, 116, 245);
         private static readonly Color TextMain = Color.FromArgb(236, 242, 255);
-        private static readonly Color Muted = Color.FromArgb(155, 168, 194);
-        private static readonly Color Danger = Color.FromArgb(242, 113, 128);
+        private static readonly Color Muted = Color.FromArgb(155, 166, 184);
+        private static readonly Color Danger = Color.FromArgb(247, 113, 113);
         private static readonly Color Success = Color.FromArgb(89, 194, 155);
 
         private readonly Panel sidebar = new Panel();
@@ -77,7 +77,7 @@ namespace StorHUB {
 
         private void InitializeLayout() {
             sidebar.Dock = DockStyle.Left;
-            sidebar.Width = 225;
+            sidebar.Width = 228;
             sidebar.BackColor = Side;
             Controls.Add(sidebar);
 
@@ -170,6 +170,12 @@ namespace StorHUB {
                 BackColor = Card
             };
             p.Paint += delegate(object o, PaintEventArgs e) {
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                using (LinearGradientBrush background = new LinearGradientBrush(
+                    new Rectangle(0, 0, p.Width, p.Height),
+                    Color.FromArgb(23, 32, 55), Color.FromArgb(26, 26, 52), 0f)) {
+                    e.Graphics.FillRectangle(background, 1, 1, p.Width - 2, p.Height - 2);
+                }
                 using (Pen pen = new Pen(Border)) {
                     e.Graphics.DrawRectangle(pen, 0, 0, p.Width - 1, p.Height - 1);
                 }
@@ -201,7 +207,7 @@ namespace StorHUB {
             return b;
         }
 
-        private int ViewWidth { get { return Math.Max(760, workspace.ClientSize.Width - 46); } }
+        private int ViewWidth { get { return Math.Max(700, workspace.ClientSize.Width - 64); } }
 
         private void ShowPage(string section) {
             if (IsDisposed) return;
@@ -219,7 +225,7 @@ namespace StorHUB {
 
         private void ShowDashboard() {
             int width = ViewWidth;
-            Panel hero = MakeCard(18, 18, width, 342);
+            Panel hero = MakeCard(28, 28, width, 502);
             Ring ring = new Ring();
             ring.SetBounds(25, 27, 225, 225);
             ring.Score = hasAnalysis ? healthScore : -1;
@@ -253,19 +259,19 @@ namespace StorHUB {
             for (int i = 0; i < findings.Count; i++) {
                 Color c = hasAnalysis && findings[i].StartsWith("●") ? Danger
                         : hasAnalysis ? Success : Muted;
-                AddText(hero, findings[i], left, 117 + 31 * i, width - left - 15, 27,
+                AddText(hero, findings[i], left, 168 + 44 * i, width - left - 15, 29,
                         9, FontStyle.Regular, c);
             }
-            AddButton(hero, hasAnalysis ? "Analisar novamente" : "Iniciar análise", left, 290, 177,
+            AddButton(hero, hasAnalysis ? "Analisar novamente" : "Iniciar análise", left, 432, 177,
                 delegate { RefreshSnapshot(); hasAnalysis = true; healthScore = CalculateScore(); ShowPage("Painel"); });
-            AddButton(hero, "Meu PC", left + 190, 290, 104,
+            AddButton(hero, "Meu PC", left + 190, 432, 104,
                 delegate { ShowPage("Meu PC"); }, false);
 
             int gap = 13;
             int third = (width - 2 * gap) / 3;
-            Panel ram = MakeCard(18, 375, third, 89);
-            Panel disk = MakeCard(18 + third + gap, 375, third, 89);
-            Panel os = MakeCard(18 + 2 * (third + gap), 375, third, 89);
+            Panel ram = MakeCard(28, 539, third, 91);
+            Panel disk = MakeCard(28 + third + gap, 539, third, 91);
+            Panel os = MakeCard(28 + 2 * (third + gap), 539, third, 91);
             AddText(ram, "MEMÓRIA RAM", 17, 10, third - 20, 24, 8, FontStyle.Bold, Muted);
             AddText(ram, RamSummary(), 17, 38, third - 23, 36, 11, FontStyle.Bold);
             AddText(disk, "DISCO DO SISTEMA", 17, 10, third - 20, 24, 8, FontStyle.Bold, Muted);
@@ -273,12 +279,12 @@ namespace StorHUB {
             AddText(os, "WINDOWS", 17, 10, third - 20, 24, 8, FontStyle.Bold, Muted);
             AddText(os, snapshot.Os, 17, 38, third - 22, 36, 9, FontStyle.Regular);
 
-            AddText(workspace, "Ferramentas", 19, 479, width - 20, 30, 12, FontStyle.Bold);
+            AddText(workspace, "Ferramentas", 29, 639, width - 20, 30, 12, FontStyle.Bold);
             string[] quick = { "Pós-formatação", "Benchmark", "Meu PC" };
             string[] details = { "Preparar o Windows com segurança", "Testes de desempenho (em preparação)", "Informações do seu computador" };
             for (int i = 0; i < 3; i++) {
                 int pos = i;
-                Panel tile = MakeCard(18 + i * (third + gap), 513, third, 114);
+                Panel tile = MakeCard(28 + i * (third + gap), 678, third, 122);
                 AddText(tile, quick[i], 18, 19, third - 30, 34, 12, FontStyle.Bold);
                 AddText(tile, details[i], 18, 52, third - 30, 48, 9, FontStyle.Regular, Muted);
                 tile.Cursor = Cursors.Hand;
@@ -286,7 +292,7 @@ namespace StorHUB {
             }
             AddText(workspace,
                 "Versão inicial independente • Diagnóstico somente leitura • Sem execução automática de reparos",
-                19, 637, width, 30, 8, FontStyle.Regular, Muted);
+                29, 811, width, 30, 8, FontStyle.Regular, Muted);
         }
 
         private void ShowModule(string section) {
