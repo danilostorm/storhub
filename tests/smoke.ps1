@@ -24,7 +24,7 @@ try {
     $pages = @(
         'Painel', 'Meu PC', 'Programas', 'Inicialização', 'Rede', 'Windows 11',
         'Pontos de restauração', 'Limpeza', 'Bateria', 'Saúde dos discos',
-        'Arquivos duplicados', 'Mapa do disco', 'Sobre'
+        'Arquivos duplicados', 'Mapa do disco', 'Drivers', 'Periféricos', 'Benchmark', 'Sobre'
     )
     foreach($page in $pages) {
         $show.Invoke($instance,@($page)) | Out-Null
@@ -63,7 +63,58 @@ try {
     Write-Host '[OK] Indicador de RAM e disco entre 0 e 100' -ForegroundColor Green
     $passed++
 
-    Write-Host "RESULTADO: $passed testes passaram. Nenhuma operação de reparo ou remoção foi executada." -ForegroundColor Green
+    # Consulta real, somente leitura, dos dispositivos Plug and Play.
+    $devices = $instance.GetType().GetMethod('QueryDevices',$staticFlags).Invoke($null,@())
+    if (@($devices).Count -lt 1) { throw "Nenhum dispositivo PnP foi detectado." }
+    Write-Host "[OK] Inventário de $(@($devices).Count) dispositivos Plug and Play" -ForegroundColor Green
+    $passed++
+
+    # Evento local de teste de teclado, sem injeção de teclas no sistema.
+    $show.Invoke($instance,@('Periféricos')) | Out-Null
+    [Windows.Forms.Application]::DoEvents()
+    $keyboardEvent = $instance.GetType().GetMethod('OnKeyDown',$flags)
+    $keyboardEvent.Invoke($instance,@([Windows.Forms.KeyEventArgs]::new([Windows.Forms.Keys]::A))) | Out-Null
+    $keys = $instance.GetType().GetField('testedKeys',$flags).GetValue($instance)
+    if (-not $keys.Contains([Windows.Forms.Keys]::A)) { throw "O teste de teclado não registrou A." }
+    Write-Host '[OK] Teste de teclado registra teclas reais' -ForegroundColor Green
+    $passed++
+
+    $bench = $instance.GetType().GetMethod('RunBenchmark',$staticFlags)
+    $callback = [Action[string]]{ param($message) }
+    $before = @(Get-ChildItem -LiteralPath ([IO.Path]::GetTempPath()) -Filter 'StorHUB-benchmark-*.tmp' -File -ErrorAction SilentlyContinue).Count
+    $results = @($bench.Invoke($null,@([Threading.CancellationToken]::None,$callback)))
+    if ($results.Count -ne 5) { throw "Benchmark deveria retornar 5 medições, retornou $($results.Count)." }
+    foreach ($metric in $results) {
+        if ($metric.Value -le 0 -or [double]::IsNaN($metric.Value) -or [double]::IsInfinity($metric.Value)) {
+            throw "Medição inválida: $($metric.Label) = $($metric.Value)."
+        }
+    }
+    Write-Host '[OK] Benchmark CPU, RAM e disco: 5 medições reais' -ForegroundColor Green
+    $passed++
+
+    $after = @(Get-ChildItem -LiteralPath ([IO.Path]::GetTempPath()) -Filter 'StorHUB-benchmark-*.tmp' -File -ErrorAction SilentlyContinue).Count
+    if ($after -gt $before) { throw "O teste deixou arquivos temporários inesperados." }
+    Write-Host '[OK] Arquivos temporários do benchmark removidos' -ForegroundColor Green
+    $passed++
+
+    $cancelSource = New-Object System.Threading.CancellationTokenSource
+    $cancelSource.Cancel()
+    $cancelled = $false
+    try {
+        $bench.Invoke($null,@($cancelSource.Token,$callback)) | Out-Null
+    } catch {
+        $inner = $_.Exception
+        while ($inner -ne $null) {
+            if ($inner -is [OperationCanceledException]) { $cancelled = $true }
+            $inner = $inner.InnerException
+        }
+        if (-not $cancelled) { throw }
+    } finally { $cancelSource.Dispose() }
+    if (-not $cancelled) { throw "Benchmark ignorou pedido de cancelamento." }
+    Write-Host '[OK] Cancelamento do benchmark respeitado' -ForegroundColor Green
+    $passed++
+
+    Write-Host "RESULTADO: $passed testes passaram. Nenhuma operação de reparo ou exclusão de arquivos pessoais foi executada." -ForegroundColor Green
 } finally {
     $instance.Close()
     $instance.Dispose()
