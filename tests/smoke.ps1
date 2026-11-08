@@ -1,4 +1,4 @@
-# Execute no Windows com PowerShell 5.1.
+﻿# Execute no Windows com PowerShell 5.1.
 # Testes locais e não destrutivos: não executa limpeza, reparos nem alterações do sistema.
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
