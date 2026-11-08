@@ -261,21 +261,21 @@ namespace StorHUB {
                 evt.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
                 double total = result.Sum(x => (double)x.Length);
                 if (total <= 0) return;
-                int x = 2;
+                int blockLeft = 2;
                 for (int i = 0; i < result.Count && i < 18; i++) {
                     FolderBucket b = result[i];
                     int w = Math.Max(1, (int)((blocks.Width - 4) * b.Length / total));
-                    if (x + w > blocks.Width - 2) w = blocks.Width - 2 - x;
+                    if (blockLeft + w > blocks.Width - 2) w = blocks.Width - 2 - blockLeft;
                     if (w <= 0) break;
                     Color color = Color.FromArgb(35 + (i*23)%92, 73 + (i*29)%98, 126 + (i*17)%106);
                     using (Brush brush = new SolidBrush(color))
-                        evt.Graphics.FillRectangle(brush, x, 1, w - 1, blocks.Height - 2);
+                        evt.Graphics.FillRectangle(brush, blockLeft, 1, w - 1, blocks.Height - 2);
                     if (w > 88) {
                         using (Font font = new Font("Segoe UI", 8, FontStyle.Bold))
                         using (Brush brush = new SolidBrush(Color.White))
-                            evt.Graphics.DrawString(b.Name, font, brush, x + 6, 8);
+                            evt.Graphics.DrawString(b.Name, font, brush, blockLeft + 6, 8);
                     }
-                    x += w;
+                    blockLeft += w;
                 }
             };
             ListView table = NewTable(pane, 348, "Pasta / arquivos", "Tamanho", "Arquivos");
