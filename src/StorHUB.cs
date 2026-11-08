@@ -138,8 +138,31 @@ namespace StorHUB {
                 items.Controls.Add(name);
             }
             foreach (string label in names) {
+                string marker = "·";
+                if (label == "Painel") marker = "⌂";
+                else if (label == "Pós-formatação") marker = "↓";
+                else if (label == "Programas") marker = "▣";
+                else if (label == "Meu PC") marker = "▤";
+                else if (label == "Saúde dos discos") marker = "◇";
+                else if (label == "Bateria") marker = "▰";
+                else if (label == "Windows 11") marker = "⊞";
+                else if (label == "Drivers") marker = "▧";
+                else if (label == "Rede") marker = "⌁";
+                else if (label == "Benchmark") marker = "⌁";
+                else if (label == "Periféricos") marker = "⎔";
+                else if (label == "Limpeza") marker = "♧";
+                else if (label == "Mapa do disco") marker = "◫";
+                else if (label == "Arquivos duplicados") marker = "◩";
+                else if (label == "Otimizações") marker = "⚙";
+                else if (label == "Desinstalador") marker = "▦";
+                else if (label == "Inicialização") marker = "◷";
+                else if (label == "Reparar o Windows") marker = "✚";
+                else if (label == "Pontos de restauração") marker = "↶";
+                else if (label == "Central Desfazer") marker = "↩";
+                else if (label == "Backup para formatar") marker = "▥";
+                else if (label == "Sobre") marker = "ⓘ";
                 Button b = new Button {
-                    Text = "  " + label, Width = 198, Height = 31,
+                    Text = " " + marker + "    " + label, Width = 198, Height = 31,
                     TextAlign = ContentAlignment.MiddleLeft,
                     FlatStyle = FlatStyle.Flat,
                     BackColor = Side, ForeColor = Muted,
@@ -227,6 +250,7 @@ namespace StorHUB {
             int width = ViewWidth;
             Panel hero = MakeCard(28, 28, width, 502);
             Ring ring = new Ring();
+            ring.BackColor = Color.Transparent;
             ring.SetBounds(25, 27, 225, 225);
             ring.Score = hasAnalysis ? healthScore : -1;
             hero.Controls.Add(ring);
@@ -473,7 +497,11 @@ namespace StorHUB {
 
         private class Ring : Control {
             public int Score = -1;
-            public Ring() { DoubleBuffered = true; }
+            public Ring() {
+                DoubleBuffered = true;
+                SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+                BackColor = Color.Transparent;
+            }
             protected override void OnPaint(PaintEventArgs e) {
                 base.OnPaint(e);
                 Graphics g = e.Graphics;
