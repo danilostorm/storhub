@@ -100,10 +100,10 @@ namespace StorHUB {
                 18,56,pane.Width-37,55,9,FontStyle.Regular,Muted);
 
             RepairCheck[] checks=GetRepairChecks();
-            Label status=AddText(pane,"Nenhuma verificação iniciada.",18,181,pane.Width-40,40,
+            Label status=AddText(pane,"Nenhuma verificação iniciada.",169,168,pane.Width-188,39,
                 10,FontStyle.Regular,Muted);
             TextBox output=new TextBox {
-                Bounds=new Rectangle(18,230,Math.Max(300,pane.Width-38),pane.Height-253),
+                Bounds=new Rectangle(18,258,Math.Max(300,pane.Width-38),pane.Height-279),
                 Multiline=true,ReadOnly=true,ScrollBars=ScrollBars.Both,
                 BackColor=Color.FromArgb(12,18,31),ForeColor=TextMain,
                 Font=new Font("Consolas",9),WordWrap=false
@@ -155,13 +155,13 @@ namespace StorHUB {
                 };
             }
             // Keep control order by explicit coordinates. In narrow windows, scroll horizontally.
-            stop.Top=169;
-            stop.Left=Math.Max(18,pane.Width-158);
+            stop.Top=168;
+            stop.Left=18;
             stop.Click+=delegate{
                 if(repairCancellation!=null)repairCancellation.Cancel();
                 status.Text="Interrupção solicitada.";
             };
-            AddButton(pane,"Copiar relatório",Math.Max(18,pane.Width-169),181,145,
+            AddButton(pane,"Copiar relatório",Math.Max(18,pane.Width-169),213,145,
                 delegate{
                     try { Clipboard.SetText(output.Text); }
                     catch(Exception ex){ShowError(ex.Message);}
