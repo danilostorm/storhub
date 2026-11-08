@@ -79,7 +79,11 @@ namespace StorHUB {
                 Button reset=AddButton(p,"Recomeçar",Math.Max(16,p.Width-153),65,134,
                     delegate{testedKeys.Clear();downKeys.Clear();if(keyboardDisplay!=null)keyboardDisplay.Invalidate();if(keyboardCount!=null)keyboardCount.Text="0 teclas distintas testadas";},false);
                 Button enabled=AddButton(p,keyboardCaptureEnabled?"Teste ligado":"Teste desligado",18,65,170,
-                    delegate{keyboardCaptureEnabled=!keyboardCaptureEnabled;if(!enabled.IsDisposed){enabled.Text=keyboardCaptureEnabled?"Teste ligado":"Teste desligado";}},true);
+                    null,true);
+                enabled.Click+=delegate {
+                    keyboardCaptureEnabled=!keyboardCaptureEnabled;
+                    if(!enabled.IsDisposed) enabled.Text=keyboardCaptureEnabled?"Teste ligado":"Teste desligado";
+                };
                 keyboardDisplay=new KeyboardCanvas(testedKeys,downKeys);
                 keyboardDisplay.SetBounds(12,125,Math.Max(740,p.Width-24),320);
                 p.Controls.Add(keyboardDisplay);
