@@ -24,7 +24,8 @@ try {
     $pages = @(
         'Painel', 'Meu PC', 'Programas', 'Inicialização', 'Rede', 'Windows 11',
         'Pontos de restauração', 'Limpeza', 'Bateria', 'Saúde dos discos',
-        'Arquivos duplicados', 'Mapa do disco', 'Drivers', 'Periféricos', 'Benchmark', 'Sobre'
+        'Arquivos duplicados', 'Mapa do disco', 'Drivers', 'Periféricos', 'Benchmark',
+        'Reparar o Windows', 'Otimizações', 'Sobre'
     )
     foreach($page in $pages) {
         $show.Invoke($instance,@($page)) | Out-Null
@@ -112,6 +113,31 @@ try {
     } finally { $cancelSource.Dispose() }
     if (-not $cancelled) { throw "Benchmark ignorou pedido de cancelamento." }
     Write-Host '[OK] Cancelamento do benchmark respeitado' -ForegroundColor Green
+    $passed++
+
+    $checks = @($instance.GetType().GetMethod('GetRepairChecks',$staticFlags).Invoke($null,@()))
+    if ($checks.Count -ne 2) { throw "Esperados exatamente 2 verificadores não destrutivos." }
+    $keys = @($checks | ForEach-Object { $_.Key })
+    if (-not ($keys -contains 'dism_check') -or -not ($keys -contains 'sfc_verify')) {
+        throw "Lista de verificações de integridade incorreta."
+    }
+    foreach ($check in $checks) {
+        if (-not (Test-Path -LiteralPath $check.Exe)) { throw "Ferramenta não encontrada: $($check.Exe)" }
+        if ($check.Arguments -match '(?i)scannow|restorehealth|/fix|/f(?:\s|$)') {
+            throw "Comando potencialmente modificador encontrado: $($check.Arguments)"
+        }
+    }
+    Write-Host '[OK] Comandos de integridade DISM e SFC somente verificação' -ForegroundColor Green
+    $passed++
+
+    $serviceResult = @($instance.GetType().GetMethod('ReadOptimizationServices',$staticFlags).Invoke($null,@()))
+    if ($serviceResult.Count -lt 1) { throw "Consulta de serviços do Windows retornou vazia." }
+    foreach ($service in $serviceResult) {
+        if (@('wuauserv','BITS','WinDefend','WSearch','SysMain') -notcontains $service.Name) {
+            throw "Serviço inesperado no inventário de otimizações."
+        }
+    }
+    Write-Host "[OK] Inventário dos serviços Windows: $($serviceResult.Count) entradas" -ForegroundColor Green
     $passed++
 
     Write-Host "RESULTADO: $passed testes passaram. Nenhuma operação de reparo ou exclusão de arquivos pessoais foi executada." -ForegroundColor Green
